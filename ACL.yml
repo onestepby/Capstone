@@ -1,0 +1,31 @@
+---
+- name: ACL
+  hosts: Routers
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks:
+   - name: Configure ACL on Cisco Switch 
+     ios_config:
+       #provider: "{{ cli }}"
+       lines:
+         - access-list 100 deny icmp 10.68.0.0 0.0.1.255 10.68.2.0 0.0.1.255 echo
+         - access-list 100 permit ip any any
+
+   - name: Show access-list
+     ios_command:
+     #provider: "{{ cli }}"
+      commands: show access-list 100
+    
+     register: acl
+
+   - name: print out to screen
+     debug:
+      var=acl.stdout_lines
+ 
