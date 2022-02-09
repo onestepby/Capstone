@@ -1,0 +1,33 @@
+---
+
+- name: IPv6 Globally Enable
+  hosts: Routers
+  gather_facts: false
+  connection: local
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks:
+    - name: Global config setting
+      ios_config:
+        provider: "{{ cli }}"
+        lines:
+         - ipv6 unicast-routing
+   
+
+    - name: show ipv6 unicast-routing
+      ios_command:
+        provider: "{{ cli }}"
+        commands: show run | s ipv6 unicast-routing
+
+      register: ipv6_unicast
+
+    - name: print output to screen
+      debug:
+        var=ipv6_unicast.stdout_lines
+
+ 

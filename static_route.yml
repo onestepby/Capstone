@@ -1,0 +1,24 @@
+---
+
+- name: configure interfaces
+  hosts: Routers
+  gather_facts: false
+  connection: local
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks:
+    - name: Static Route Config
+      ios_static_route:
+        aggregate:
+          - { prefix: 10.1.3.0, mask: 255.255.255.0, interfaces: GigabitEthernet1/1}
+          - { prefix: 10.1.4.0, mask: 255.255.255.0, interfaces: GigabitEthernet1/1}     
+        state: present 
+      register: route2
+
+    # - debug:
+    #     var: router2.commands 

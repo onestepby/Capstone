@@ -1,0 +1,10 @@
+---
+
+- name: General Config
+  hosts: Routers
+  
+  tasks:
+  - name: Add loopback
+    ios_interface:
+      name: Loopback1
+      state: present

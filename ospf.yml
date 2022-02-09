@@ -1,0 +1,39 @@
+---
+- name: ospf configuration
+  hosts: Routers
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks: 
+   - name: Configure OSFP 1 and put all interfaces into Area 0 
+     ios_config:
+        provider: "{{ cli }}"
+        lines: 
+          - network 10.68.0.0 0.0.1.255 area 0
+          - network 10.68.2.0 0.0.1.255 area 0
+          - network 10.68.4.0 0.0.0.255 area 0
+        parents: router ospf 1          
+
+   - name: SAVE CONFIG 
+     ios_command:
+       commands:
+         - write memory
+
+   - name: Verify OSPF interface is Active
+     ios_command:
+       commands: 
+         - sh run | sec router ospf 
+       waitfor:
+         - result[0] contains 'router ospf 1'
+
+     register: ospf
+
+   - name: 
+     debug:
+       var=ospf.stdout_lines

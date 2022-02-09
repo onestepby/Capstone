@@ -1,0 +1,21 @@
+---
+- name: Configure interface with IP
+  hosts: Routers
+  gather_facts: false
+  connection: local
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+
+  tasks:
+   - name: configure Gig2 settings
+     ios_config:
+       lines:
+         - description test interface
+         - ip address 10.0.0.1 255.255.255.0 
+         - shut
+       parents: interface GigabitEthernet1/1

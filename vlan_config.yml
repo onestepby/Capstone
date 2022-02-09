@@ -1,0 +1,41 @@
+---
+
+- name: configure vlans
+  hosts: Routers
+  gather_facts: false
+  connection: local
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+    vlans:
+      10: "Marketing" # '10' is key, 'Marketing' is value 
+      20: "IT"
+      30: "Research"
+      99: "Native"
+
+  tasks:
+    - name: create vlans
+      ios_config:
+        # provider: "{{ cli }}"
+        lines:
+         - name {{item.value}}
+
+        parents:
+         - vlan {{item.key}}
+      with_dict: "{{vlans}}"
+
+    - name: show vlan brief
+      ios_command:
+        # provider: "{{ cli }}"
+        commands: show vlan brief
+
+      register: vlan_brief
+
+    - name: print output to screen
+      debug:
+        var=vlan_brief.stdout_lines
+

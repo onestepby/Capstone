@@ -1,0 +1,70 @@
+---
+
+- name: vlan
+  hosts: Routers
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks:
+    # - name: Configure Access 
+    #   ios_l2_interfaces:
+    #     config:    
+    #       - name: GigabitEthernet0/2
+    #         access:
+    #           vlan: 10
+    #     state: merged
+
+    - name: Configure Trunk
+      ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet0/2
+            trunk:
+              allowed_vlans: 10,20,30,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+          - name: GigabitEthernet0/3
+            trunk:
+              allowed_vlans: 10,20,30,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+          - name: GigabitEthernet1/0
+            trunk:
+              allowed_vlans: 10,20,30,99
+              encapsulation: dot1q
+              native_vlan: 99
+      
+        state: merged
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/2
+        mode: trunk 
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/3
+        mode: trunk 
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet1/0
+        mode: trunk 
+
+    - name: Show run
+      ios_command:
+      #provider: "{{ cli }}"
+        commands: show int trunk
+
+      register: int_trunk
+
+    - name: show running 
+      debug:
+        var=int_trunk.stdout_lines
