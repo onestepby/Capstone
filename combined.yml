@@ -24,15 +24,15 @@
       ios_config:
 
         lines:
-         - name {{item.value}}
+        - name {{item.value}}
 
         parents:
-         - vlan {{item.key}}
+        - vlan {{item.key}}
       with_dict: "{{vlans}}"
 
     - name: show vlan brief
       ios_command:
-       
+      
         commands: show vlan brief
 
       register: vlan_brief
@@ -145,7 +145,7 @@
               allowed_vlans: 10,99
               encapsulation: dot1q
               native_vlan: 99
-     
+
         state: merged
 
     - name: Configure Trunk
@@ -184,7 +184,7 @@
               allowed_vlans: 20,99
               encapsulation: dot1q
               native_vlan: 99
-     
+
         state: merged
 
     - name: Configure Trunk
@@ -224,7 +224,7 @@
               allowed_vlans: 30,99
               encapsulation: dot1q
               native_vlan: 99
-     
+
         state: merged
 
     - name: Configure Trunk
@@ -264,7 +264,7 @@
               allowed_vlans: 40,99
               encapsulation: dot1q
               native_vlan: 99
-     
+
         state: merged
 
     - name: Configure Trunk
@@ -300,30 +300,30 @@
       timeout: 100
 
   tasks: 
-   - name: Configure OSFP 1 and put all interfaces into Area 0 
-     ios_config:
+  - name: Configure OSFP 1 and put all interfaces into Area 0 
+    ios_config:
         provider: "{{ cli }}"
         lines: 
           - network 192.168.96.0 0.0.15.255 area 0
         parents: router ospf 1          
 
-   - name: SAVE CONFIG 
-     ios_command:
-       commands:
-         - write memory
+  - name: SAVE CONFIG 
+    ios_command:
+      commands:
+        - write memory
 
-   - name: Verify OSPF interface is Active
-     ios_command:
-       commands: 
-         - sh run | sec router ospf 
-       waitfor:
-         - result[0] contains 'router ospf 1'
+  - name: Verify OSPF interface is Active
+    ios_command:
+      commands: 
+        - sh run | sec router ospf 
+      waitfor:
+        - result[0] contains 'router ospf 1'
 
-     register: ospf
+    register: ospf
 
-   - name: 
-     debug:
-       var=ospf.stdout_lines
+  - name: 
+    debug:
+      var=ospf.stdout_lines
 
 
 - name: ospf configuration
@@ -338,31 +338,31 @@
       timeout: 100
 
   tasks: 
-   - name: Configure OSFP 1 and put all interfaces into Area 0 
-     ios_config:
+  - name: Configure OSFP 1 and put all interfaces into Area 0 
+    ios_config:
         provider: "{{ cli }}"
         lines: 
           - network 192.168.0.0 0.0.127.255 area 0
 
         parents: router ospf 1          
 
-   - name: SAVE CONFIG 
-     ios_command:
-       commands:
-         - write memory
+  - name: SAVE CONFIG 
+    ios_command:
+      commands:
+        - write memory
 
-   - name: Verify OSPF interface is Active
-     ios_command:
-       commands: 
-         - sh run | sec router ospf 
-       waitfor:
-         - result[0] contains 'router ospf 1'
+  - name: Verify OSPF interface is Active
+    ios_command:
+      commands: 
+        - sh run | sec router ospf 
+      waitfor:
+        - result[0] contains 'router ospf 1'
 
-     register: ospf
+    register: ospf
 
-   - name: 
-     debug:
-       var=ospf.stdout_lines
+  - name: 
+    debug:
+      var=ospf.stdout_lines
 
 
 
@@ -378,28 +378,28 @@
       timeout: 100
 
   tasks: 
-   - name: Configure OSFP 1 and put all interfaces into Area 0 
-     ios_config:
+  - name: Configure OSFP 1 and put all interfaces into Area 0 
+    ios_config:
         provider: "{{ cli }}"
         lines: 
           - network 192.168.0.0 0.0.127.255 area 0
 
         parents: router ospf 1          
 
-   - name: SAVE CONFIG 
-     ios_command:
-       commands:
-         - write memory
+  - name: SAVE CONFIG 
+    ios_command:
+      commands:
+        - write memory
 
-   - name: Verify OSPF interface is Active
-     ios_command:
-       commands: 
-         - sh run | sec router ospf 
-       waitfor:
-         - result[0] contains 'router ospf 1'
+  - name: Verify OSPF interface is Active
+    ios_command:
+      commands: 
+        - sh run | sec router ospf 
+      waitfor:
+        - result[0] contains 'router ospf 1'
 
-     register: ospf
+    register: ospf
 
-   - name: 
-     debug:
-       var=ospf.stdout_lines
+  - name: 
+    debug:
+      var=ospf.stdout_lines
