@@ -1,0 +1,405 @@
+############################Create VLANs Name#################################
+---
+
+- name: configure vlans
+  hosts: DLS_ALS
+  gather_facts: false
+  connection: local
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+    vlans:
+      10: "Marketing" # '10' is key, 'Marketing' is value 
+      20: "IT"
+      30: "Research"
+      40: "Sales"  
+      99: "Native"
+
+  tasks:
+    - name: create vlans
+      ios_config:
+
+        lines:
+        - name {{item.value}}
+
+        parents:
+        - vlan {{item.key}}
+      with_dict: "{{vlans}}"
+
+    - name: show vlan brief
+      ios_command:
+      
+        commands: show vlan brief
+
+      register: vlan_brief
+
+    - name: print output to screen
+      debug:
+        var=vlan_brief.stdout_lines
+
+
+
+
+#############################DLS TRUNK NATIVE VLAN################################
+- name: vlan
+  hosts: DLS
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks:
+    - name: Configure Trunk
+      ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            trunk:
+              allowed_vlans: 10,20,30,40,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+          - name: GigabitEthernet0/2
+            trunk:
+              allowed_vlans: 10,20,30,40,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+          - name: GigabitEthernet0/3
+            trunk:
+              allowed_vlans: 10,20,30,40,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+          - name: GigabitEthernet1/0
+            trunk:
+              allowed_vlans: 10,20,30,40,99
+              encapsulation: dot1q
+              native_vlan: 99
+      
+        state: merged
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/1
+        mode: trunk 
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/2
+        mode: trunk 
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/3
+        mode: trunk 
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet1/0
+        mode: trunk 
+
+    - name: Show run
+      ios_command:
+    
+        commands: show int trunk
+
+      register: int_trunk
+
+    - name: show running 
+      debug:
+        var=int_trunk.stdout_lines
+
+#################################ALS TRUNK NATIVE VLAN#######################################
+
+- name: vlan
+  hosts: S1
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks:
+    - name: Configure Trunk
+      ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            trunk:
+              allowed_vlans: 10,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+          - name: GigabitEthernet0/2
+            trunk:
+              allowed_vlans: 10,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+        state: merged
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/1
+        mode: trunk 
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/2
+        mode: trunk 
+
+- name: vlan
+  hosts: S2
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks:
+    - name: Configure Trunk
+      ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            trunk:
+              allowed_vlans: 20,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+          - name: GigabitEthernet0/2
+            trunk:
+              allowed_vlans: 20,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+        state: merged
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/1
+        mode: trunk 
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/2
+        mode: trunk 
+
+
+- name: vlan
+  hosts: S3
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks:
+    - name: Configure Trunk
+      ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            trunk:
+              allowed_vlans: 30,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+          - name: GigabitEthernet0/2
+            trunk:
+              allowed_vlans: 30,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+        state: merged
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/1
+        mode: trunk 
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/2
+        mode: trunk 
+
+
+- name: vlan
+  hosts: S4
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks:
+    - name: Configure Trunk
+      ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            trunk:
+              allowed_vlans: 40,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+          - name: GigabitEthernet0/2
+            trunk:
+              allowed_vlans: 40,99
+              encapsulation: dot1q
+              native_vlan: 99
+
+        state: merged
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/1
+        mode: trunk 
+
+    - name: Configure Trunk
+      ios_l2_interface:
+        name: GigabitEthernet0/2
+        mode: trunk
+
+    - name: Show run
+      ios_command:
+        commands: show int trunk
+
+      register: int_trunk
+
+    - name: show running 
+      debug:
+        var=int_trunk.stdout_lines
+
+##############################Routing Protocol (OSPF)############################
+- name: ospf configuration
+  hosts: Routers
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks: 
+  - name: Configure OSFP 1 and put all interfaces into Area 0 
+    ios_config:
+        provider: "{{ cli }}"
+        lines: 
+          - network 192.168.96.0 0.0.15.255 area 0
+        parents: router ospf 1          
+
+  - name: SAVE CONFIG 
+    ios_command:
+      commands:
+        - write memory
+
+  - name: Verify OSPF interface is Active
+    ios_command:
+      commands: 
+        - sh run | sec router ospf 
+      waitfor:
+        - result[0] contains 'router ospf 1'
+
+    register: ospf
+
+  - name: 
+    debug:
+      var=ospf.stdout_lines
+
+
+- name: ospf configuration
+  hosts: DLS1
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks: 
+  - name: Configure OSFP 1 and put all interfaces into Area 0 
+    ios_config:
+        provider: "{{ cli }}"
+        lines: 
+          - network 192.168.0.0 0.0.127.255 area 0
+
+        parents: router ospf 1          
+
+  - name: SAVE CONFIG 
+    ios_command:
+      commands:
+        - write memory
+
+  - name: Verify OSPF interface is Active
+    ios_command:
+      commands: 
+        - sh run | sec router ospf 
+      waitfor:
+        - result[0] contains 'router ospf 1'
+
+    register: ospf
+
+  - name: 
+    debug:
+      var=ospf.stdout_lines
+
+
+
+- name: ospf configuration
+  hosts: DLS2
+  gather_facts: false
+  connection: local 
+
+  vars:
+    cli:
+      username: cisco
+      password: cisco
+      timeout: 100
+
+  tasks: 
+  - name: Configure OSFP 1 and put all interfaces into Area 0 
+    ios_config:
+        provider: "{{ cli }}"
+        lines: 
+          - network 192.168.0.0 0.0.127.255 area 0
+
+        parents: router ospf 1          
+
+  - name: SAVE CONFIG 
+    ios_command:
+      commands:
+        - write memory
+
+  - name: Verify OSPF interface is Active
+    ios_command:
+      commands: 
+        - sh run | sec router ospf 
+      waitfor:
+        - result[0] contains 'router ospf 1'
+
+    register: ospf
+
+  - name: 
+    debug:
+      var=ospf.stdout_lines
